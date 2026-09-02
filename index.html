@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>REAP Books — local-first bookkeeping</title>
+<meta name="description" content="Local-first bookkeeping for small US agencies and independents. Runs on your machine, against your own files and your own credentials.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+
+<nav>
+  <a class="home" href="./">REAP Books</a>
+  <a href="privacy.html">Privacy</a>
+  <a href="terms.html">Terms</a>
+  <a href="https://github.com/talktalkmake/reapbooks">Source</a>
+</nav>
+
+<h1>REAP Books</h1>
+<p class="lede">
+  Local-first bookkeeping for small US agencies and independents. It turns a
+  folder of receipts and a bank statement into invoices, a clean expense
+  ledger, and a reconciled month — running on your own machine, against your
+  own files and your own credentials.
+</p>
+
+<p><strong>Pre-release.</strong> There is no install to recommend yet. The source is public and the work is in the open.</p>
+
+<h2>How it works</h2>
+<p>
+  REAP is an <a href="https://modelcontextprotocol.io">MCP</a> server. You point
+  an AI assistant at a folder on your machine, and then you talk to it: set up
+  your business, invoice a client, work through a month of receipts, reconcile
+  against your bank export.
+</p>
+<pre>reap init --workspace ~/my-books
+claude mcp add reap -- reap serve --workspace ~/my-books</pre>
+
+<h2>Three things it will not do</h2>
+<ul class="claims">
+  <li>
+    <strong>It will not let a model do your arithmetic.</strong>
+    A language model doing sums produces confident wrong answers, which in
+    bookkeeping means someone files wrong numbers. Every figure REAP asserts is
+    computed from integer cents by ordinary code, and is reproducible by running
+    that code over the same inputs. The model reads receipts, suggests
+    categories, and drafts prose.
+  </li>
+  <li>
+    <strong>It will not send your tax ID or bank details to a model.</strong>
+    They stay in a file on your machine. The model-facing surface receives a
+    redacted view — everything else, with those two replaced by a flag saying
+    they exist. This is enforced by tests that run on every change, not by
+    anyone remembering.
+  </li>
+  <li>
+    <strong>It will not phone home.</strong>
+    There is no REAP server. No account, no signup, no telemetry, no analytics,
+    no crash reporting. A finance tool that phones home is one nobody should
+    install, and there is a test that fails if a stray URL appears in the source.
+  </li>
+</ul>
+
+<h2>Where your data lives</h2>
+<ul>
+  <li><strong>On your machine.</strong> Your business details, your receipts, your bank statements, and the invoices REAP generates.</li>
+  <li><strong>In your own Google account,</strong> if you choose to connect one. REAP creates one spreadsheet — your ledger — and can touch nothing else in your Drive.</li>
+</ul>
+<p>Nowhere else. See <a href="privacy.html">the privacy policy</a>, which is short.</p>
+
+<h2>Open source</h2>
+<p>
+  Apache-2.0. The source, including the tests that back up the claims above,
+  is at <a href="https://github.com/talktalkmake/reapbooks">github.com/talktalkmake/reapbooks</a>
+  — private while REAP is pre-release, public at launch.
+</p>
+
+<footer>
+  REAP Books · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> ·
+  <a href="https://github.com/talktalkmake/reapbooks">GitHub</a>
+</footer>
+
+</main>
+</body>
+</html>
