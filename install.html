@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Setting up REAP Books</title>
+<meta name="description" content="A step-by-step setup guide for REAP Books, written for someone who has not typed a command into a computer in twenty years.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+
+<nav>
+  <a class="home" href="./">REAP Books</a>
+  <a href="install.html">Setup</a>
+  <a href="privacy.html">Privacy</a>
+  <a href="terms.html">Terms</a>
+  <a href="https://github.com/talktalkmake/reapbooks">Source</a>
+</nav>
+
+<h1>Setting up REAP</h1>
+
+<p class="lede">
+  This page assumes you have not typed a command into a computer since about
+  2005, and that you are not especially keen to start now. That is roughly the
+  right amount of caution for a tool that is going to hold your bank details.
+  Everything is written out in full: what to type, what should happen, and what
+  to do when it doesn't.
+</p>
+
+<div class="box">
+  <p><strong>Two things before you start.</strong></p>
+  <p>
+    REAP is pre-release, and the source repository is
+    <strong>private</strong>. You need to have been given access to it. If you
+    can open
+    <a href="https://github.com/talktalkmake/reapbooks">github.com/talktalkmake/reapbooks</a>
+    and see a list of files rather than a "404", you have it. If you get the
+    404, stop here — nothing below will work yet, and that is not your fault.
+  </p>
+  <p>
+    <strong>Steps 1&ndash;9 take about twenty minutes</strong> and get you as
+    far as issuing a real invoice. Step&nbsp;10 — keeping your ledger in Google
+    Sheets — is optional, is the fiddliest part of the whole thing, and can
+    wait for a different afternoon.
+  </p>
+</div>
+
+<div class="box calm">
+  <p><strong>Nothing on this page can break your computer.</strong></p>
+  <ul>
+    <li>Every command below either installs a well-known program or creates a folder. Nothing is deleted.</li>
+    <li>If you get lost, close the window and walk away. Nothing is left half-finished that matters.</li>
+    <li><strong>REAP never asks you for a password.</strong> Not once, anywhere. If a password box appears, it is your Mac or it is Google asking — not REAP.</li>
+    <li>Undoing all of it is three lines, at the <a href="#uninstall">bottom of this page</a>.</li>
+  </ul>
+</div>
+
+<h2 id="terminal">First: the terminal</h2>
+
+<p>
+  The terminal is a window where you type an instruction and press Return, and
+  the computer does it. It looks unfriendly and it is not. It is a text box.
+</p>
+
+<ul>
+  <li><strong>On a Mac:</strong> hold <kbd>&#8984;</kbd> and press <kbd>Space</kbd>, type <code>Terminal</code>, press <kbd>Return</kbd>.</li>
+  <li><strong>On Windows:</strong> click Start, type <code>PowerShell</code>, press <kbd>Enter</kbd>.</li>
+</ul>
+
+<p>
+  You will get a window with a line of text ending in <code>%</code> or
+  <code>$</code> and a blinking cursor. That is <em>the prompt</em>. It means:
+  waiting for you.
+</p>
+
+<p>
+  How to use this page: click into the terminal window, paste a command
+  (<kbd>&#8984;V</kbd>, or right-click on Windows), press <kbd>Return</kbd>,
+  and wait. Some commands take a minute and print nothing at all while they
+  work. <strong>When the prompt comes back, that command is finished.</strong>
+</p>
+
+<div class="box calm">
+  <p>
+    One thing that startles everybody: <strong>when you type something
+    secret</strong> — an account number, a Social Security number —
+    <strong>nothing appears on screen.</strong> No dots, no stars, nothing. It
+    is not broken and it is not ignoring you. It is deliberately not putting
+    your account number where the person behind you can read it. Type it and
+    press Return.
+  </p>
+</div>
+
+<h2>Step 1 · Install Node</h2>
+
+<p>
+  REAP is written in JavaScript. Node is the free program that runs
+  JavaScript on your own machine. You may already have it. Ask:
+</p>
+
+<pre>node --version</pre>
+
+<p>If it answers with a number of <strong>v20.11 or higher</strong>, you are done here:</p>
+
+<pre class="out">v22.14.0</pre>
+
+<p>
+  If instead it says <code>command not found</code>, go to
+  <a href="https://nodejs.org">nodejs.org</a>, download the version marked
+  <strong>LTS</strong>, open the file it downloads, and click through the
+  installer accepting everything. Then <strong>quit the terminal entirely and
+  open a new one</strong> — it only notices new programs when it starts — and
+  ask again.
+</p>
+
+<h2>Step 2 · Install Claude Code</h2>
+
+<p>
+  REAP has no buttons and no windows. You talk to it. Claude Code is the
+  program that does the talking, and it also runs on your machine.
+</p>
+
+<pre>npm install -g @anthropic-ai/claude-code</pre>
+
+<p>
+  That prints several lines and takes a minute. Then check it, and sign in when
+  it asks:
+</p>
+
+<pre>claude</pre>
+
+<p>
+  To leave Claude at any point, type <code>/exit</code> and press Return.
+</p>
+
+<p class="small muted">
+  If this step fails with a wall of red text containing <code>EACCES</code> or
+  <code>permission denied</code>, that is your machine declining to let a
+  program install itself system-wide. Do not fight it with the terminal;
+  follow the official installer at
+  <a href="https://docs.claude.com/en/docs/claude-code/setup">docs.claude.com/en/docs/claude-code/setup</a>
+  instead, which handles this properly.
+</p>
+
+<h2>Step 3 · Get REAP</h2>
+
+<pre>cd ~
+git clone https://github.com/talktalkmake/reapbooks.git</pre>
+
+<p>
+  <code>cd ~</code> means "go to my home folder" — the one with Documents and
+  Downloads in it. <code>git clone</code> downloads a copy of REAP into a new
+  folder called <code>reapbooks</code>.
+</p>
+
+<p>
+  <strong>On a Mac, a box may pop up offering to install "command line
+  developer tools".</strong> Click Install, wait for it to finish, then run
+  the <code>git clone</code> line again. That is macOS fetching <code>git</code>
+  for you; it is a normal Apple installer.
+</p>
+
+<p>
+  You may be asked to sign in to GitHub. That is GitHub checking you are one of
+  the people allowed to see a private repository.
+</p>
+
+<p>
+  If you get <code>Repository not found</code>, that is the private-repo gate,
+  not a typo. You have not been given access yet.
+</p>
+
+<h2>Step 4 · Set it up, and make the word <code>reap</code> work</h2>
+
+<pre>cd ~/reapbooks
+npm install
+npm link</pre>
+
+<p>
+  <code>npm install</code> fetches the single outside piece of code REAP uses.
+  (One. That is a deliberate decision, not an oversight — every dependency is
+  a stranger with write access to your machine.) <code>npm link</code> teaches
+  your terminal the word <code>reap</code>.
+</p>
+
+<p>Check it:</p>
+
+<pre>reap --version</pre>
+<pre class="out">0.0.0</pre>
+
+<div class="box calm">
+  <p>
+    <strong>If <code>npm link</code> failed</strong> with a permissions error,
+    do not worry about it. Everywhere below that says <code>reap</code>, type
+    this instead:
+  </p>
+  <pre>node ~/reapbooks/bin/reap.js</pre>
+  <p class="small">
+    So <code>reap init --workspace ~/my-books</code> becomes
+    <code>node ~/reapbooks/bin/reap.js init --workspace ~/my-books</code>.
+    Longer, identical result.
+  </p>
+</div>
+
+<h2>Step 5 · Make your books folder</h2>
+
+<pre>reap init --workspace ~/my-books</pre>
+
+<p>You get back something like this:</p>
+
+<pre class="out">Workspace ready at /Users/you/my-books
+
+  created  ./
+  created  assets/
+  created  expenses/2026-09/
+  created  statements/2026-09/
+  created  invoices/2026-09/
+  created  .gitignore</pre>
+
+<p>That folder is now yours, and it is where everything lives:</p>
+
+<ul>
+  <li><code>expenses/2026-09/</code> — money <strong>out</strong>. Drop receipts and bills in here.</li>
+  <li><code>statements/2026-09/</code> — the CSV you download from your bank.</li>
+  <li><code>invoices/2026-09/</code> — money <strong>in</strong>. REAP writes the invoices it generates here.</li>
+  <li><code>assets/</code> — put your logo here, as <code>logo.png</code>.</li>
+</ul>
+
+<p>
+  The month folders are not decoration. Bookkeeping is a monthly ritual, and a
+  single flat folder turns "which of these belong to September" into a question
+  you will eventually answer wrong.
+</p>
+
+<p class="small muted">
+  <code>.gitignore</code> is a small text file that tells version-control
+  software to never upload the contents of this folder. It is written on day
+  one, before there is anything in there to protect, because a tool that waits
+  until it notices a problem has already lost that race.
+</p>
+
+<h2>Step 6 · Introduce REAP to Claude</h2>
+
+<pre>claude mcp add reap -- reap serve --workspace ~/my-books</pre>
+
+<p>
+  In plain English, that line says: <em>there is a tool called reap; to start
+  it, run this; and it may only ever look inside <code>~/my-books</code>.</em>
+</p>
+
+<p>
+  The last part matters more than it looks. The folder is fixed at the moment
+  the tool starts, and no instruction given in a conversation can move it —
+  including text that arrived from a receipt someone else wrote or an email a
+  client sent.
+</p>
+
+<h2>Step 7 · Tell REAP about your business</h2>
+
+<pre>cd ~/my-books
+claude</pre>
+
+<p>Then type, in ordinary words:</p>
+
+<pre class="say">Set up my business profile in REAP.</pre>
+
+<p>It will ask you about:</p>
+
+<ul>
+  <li>Your <strong>legal name</strong> — the name a cheque gets made out to — and your trading name if they differ.</li>
+  <li>Your address, email, phone, website.</li>
+  <li>Whether you are a sole proprietor, an LLC, an S-corp, and so on.</li>
+  <li><strong>How you want to be paid</strong>, and your default terms (net 30, due on receipt).</li>
+  <li>What your invoice numbers should look like.</li>
+</ul>
+
+<p>
+  It will <strong>not</strong> ask for your tax ID or your bank account. That
+  is the next step, and it is on purpose.
+</p>
+
+<p>
+  When it finishes there is a file called <code>profile.json</code> in
+  <code>~/my-books</code>. You can open it in TextEdit and read it. It is
+  yours, it is plain text, and it never leaves your machine.
+</p>
+
+<h2>Step 8 · The two things you type yourself</h2>
+
+<p>
+  Leave Claude with <code>/exit</code>, and run these two in the terminal:
+</p>
+
+<pre>reap set-tax-id --workspace ~/my-books
+reap set-bank --workspace ~/my-books</pre>
+
+<div class="box">
+  <p><strong>Why these two are different.</strong></p>
+  <p>
+    Your tax ID and your bank details are never sent to a language model. But
+    if the model had <em>asked</em> you for your routing number and you had
+    typed it in reply, it would be sitting in the conversation just the same.
+    So REAP refuses to accept them that way at all. These two commands read
+    what you type and write it straight into the file on your disk, mode
+    <code>0600</code> — readable by your account and nothing else.
+  </p>
+</div>
+
+<p>Some things you will see, and should expect:</p>
+
+<ul>
+  <li>
+    <strong>Nothing appears as you type the number.</strong> Correct, and
+    deliberate. Type it and press Return.
+  </li>
+  <li>
+    <strong>A mistyped routing number is rejected immediately.</strong> Nine
+    digits carry a check digit, and REAP does the real arithmetic on it. This
+    is the one field where a typo silently sends a client's money to a
+    stranger, so it is checked while you are still sitting there. It confirms
+    the number is <em>well formed</em>; it does not prove the account exists,
+    and REAP says so rather than implying otherwise.
+  </li>
+  <li>
+    <strong>If your tax ID is a Social Security number, it will never be
+    printed on an invoice.</strong> You are not asked whether you would like
+    that. The file is not able to express it.
+  </li>
+</ul>
+
+<h2>Step 9 · Your first invoice</h2>
+
+<p>Back in <code>claude</code>, from inside <code>~/my-books</code>:</p>
+
+<pre class="say">Preview an invoice to Ridgeline Partners for 12 hours
+of design work at $150 an hour.</pre>
+
+<p>
+  <strong>Preview changes nothing.</strong> It does the arithmetic and shows
+  you the document. No invoice number is used up — a number is allocated at the
+  moment you issue, never at draft, so an abandoned draft leaves no gap in your
+  sequence.
+</p>
+
+<p>When it looks right:</p>
+
+<pre class="say">Issue it.</pre>
+
+<p>
+  You get a PDF and an HTML file in <code>invoices/2026-09/</code>. Open the
+  PDF. Check the payee line and the total with your own eyes — this is the
+  document that goes to a client, and it is worth looking at properly the first
+  time.
+</p>
+
+<p>
+  The PDF depends on nothing: no web font, no stylesheet, no logo fetched from
+  anywhere. It will open the same way in five years on a machine with no
+  internet, and it does not call anyone when your client opens it.
+</p>
+
+<p class="small muted">
+  If a client requires a purchase-order number and you have not given one, REAP
+  refuses to issue the invoice at all. It is not being difficult. Their
+  accounts-payable system would have rejected it silently, three weeks from now,
+  while you assumed you were getting paid.
+</p>
+
+<hr>
+
+<h2 id="sheets">Step 10 · The Google Sheets ledger <span class="tag">optional</span></h2>
+
+<div class="box">
+  <p>
+    <strong>You can stop reading here.</strong> Everything above works on its
+    own, and REAP will keep issuing invoices quite happily without this step.
+    Come back when you want it.
+  </p>
+</div>
+
+<p><strong>What you get:</strong> one spreadsheet, in your own Google Drive, holding your invoices, clients and expenses. It is where the hand-off to your accountant actually happens, and it is a normal spreadsheet you can correct by hand. It is also what makes the duplicate-invoice-number check real: REAP asks the sheet which numbers already exist before issuing a new one.</p>
+
+<p><strong>Why it is fiddly:</strong> REAP has not registered its own application with Google yet. Until it does, you make one — in your own Google account. It is about five minutes of clicking in an interface designed for developers, and it is the least pleasant part of this page. None of it costs anything.</p>
+
+<h3>a. Make a Google Cloud project</h3>
+<p>
+  Go to <a href="https://console.cloud.google.com">console.cloud.google.com</a>,
+  and use the project dropdown at the top to create a new project. Call it
+  anything — <code>My books</code> is fine.
+</p>
+
+<h3>b. Turn on the Sheets API</h3>
+<p>
+  In the left menu: <strong>APIs &amp; Services &rarr; Library</strong>. Search
+  for <strong>Google Sheets API</strong>, open it, press <strong>Enable</strong>.
+</p>
+
+<h3>c. Fill in the consent screen</h3>
+<p>
+  <strong>APIs &amp; Services &rarr; OAuth consent screen</strong>. Choose
+  <strong>External</strong>, put your own name and email in the required boxes,
+  and save. When it offers a <strong>Test users</strong> list, add your own
+  Google address.
+</p>
+
+<h3>d. Create the credentials</h3>
+<p>
+  <strong>Credentials &rarr; Create credentials &rarr; OAuth client ID</strong>,
+  and for application type choose <strong>Desktop app</strong>. Google shows you
+  a <strong>Client ID</strong> and a <strong>Client secret</strong>. Copy both.
+</p>
+<p class="small muted">
+  Despite the name, that "secret" is not a password to your account, and it is
+  not sensitive the way your bank details are: in a desktop application it
+  necessarily ships inside the program, which is precisely why the sign-in flow
+  is built not to rely on it.
+</p>
+
+<h3>e. Sign in</h3>
+<p>In the terminal, pasting your own two values in place of the dots:</p>
+
+<pre>export REAP_GOOGLE_CLIENT_ID=...
+export REAP_GOOGLE_CLIENT_SECRET=...
+reap connect --workspace ~/my-books</pre>
+
+<p class="small muted">
+  Those two <code>export</code> lines last only as long as this terminal window.
+  If you close it and run <code>reap connect</code> again another day, set them
+  again first. <strong>On Windows PowerShell</strong> the two lines are
+  <code>$env:REAP_GOOGLE_CLIENT_ID="..."</code> and
+  <code>$env:REAP_GOOGLE_CLIENT_SECRET="..."</code>.
+</p>
+
+<h3>f. The scary screen</h3>
+
+<div class="box">
+  <p>
+    Your browser will open Google's sign-in, and then show you:
+    <strong>"Google hasn't verified this app."</strong>
+  </p>
+  <p>
+    That is expected, and here is exactly what it means. The unverified app is
+    the one <em>you created ten minutes ago, in your own account</em>. Google
+    reviews applications that ask for access to other people's data; nobody has
+    reviewed yours because it has exactly one user, which is you. Click
+    <strong>Advanced</strong>, then the "go to&nbsp;… (unsafe)" link.
+  </p>
+  <p>
+    Then read what it asks for. It should be one permission, and only one:
+    <strong>see, edit, create and delete only the specific Google Drive files
+    you use with this app.</strong> That is the narrow one. REAP can touch the
+    spreadsheet it makes and nothing else in your Drive — not your documents,
+    not your photos, not any other spreadsheet. If the screen asks for anything
+    broader than that, something is wrong; close it and say so.
+  </p>
+</div>
+
+<h3>g. Done</h3>
+<p>REAP creates the spreadsheet and prints its address:</p>
+
+<pre class="out">Created "Your Business — books" in your Google Drive:
+  https://docs.google.com/spreadsheets/d/...</pre>
+
+<p>
+  The sign-in token is stored at
+  <code>~/Library/Application Support/reap/credentials.json</code> on a
+  Mac, readable only by you. Note that it is <em>not</em> in your books folder.
+  That is on purpose: the books folder is the one you might someday put under
+  version control, and a standing key to your spreadsheets has no business
+  being in something that can be uploaded.
+</p>
+
+<hr>
+
+<h2 id="wrong">When something goes wrong</h2>
+
+<table>
+  <tr><th>What you see</th><th>What it means</th></tr>
+  <tr>
+    <td><code>command not found: node</code></td>
+    <td>Node isn't installed, or you didn't quit and reopen the terminal after installing it. Step&nbsp;1.</td>
+  </tr>
+  <tr>
+    <td><code>command not found: reap</code></td>
+    <td><code>npm link</code> didn't take. Use the long <code>node ~/reapbooks/bin/reap.js</code> form from step&nbsp;4.</td>
+  </tr>
+  <tr>
+    <td><code>Repository not found</code></td>
+    <td>The repository is private and your GitHub account hasn't been given access. Nothing you can fix at your end.</td>
+  </tr>
+  <tr>
+    <td>Something about no <code>profile.json</code></td>
+    <td>You're ahead of yourself — run the interview in step&nbsp;7 before <code>set-tax-id</code>, <code>set-bank</code> or <code>connect</code>.</td>
+  </tr>
+  <tr>
+    <td>The routing number was rejected</td>
+    <td>A digit is wrong. Nothing was saved. Run <code>reap set-bank</code> again and retype it.</td>
+  </tr>
+  <tr>
+    <td><code>No Google OAuth client is configured</code></td>
+    <td>The two <code>export</code> lines in step&nbsp;10e, in the same terminal window as <code>reap connect</code>.</td>
+  </tr>
+  <tr>
+    <td>A wall of red with <code>EACCES</code></td>
+    <td>A permissions refusal from your own machine. It is not REAP failing, and it is not dangerous — see the note in step&nbsp;2.</td>
+  </tr>
+</table>
+
+<p>
+  When REAP itself refuses to do something, it tries to tell you what it
+  actually found rather than printing a code. If a receipt's figures do not add
+  up, for instance, you get the sum:
+</p>
+
+<pre class="out">amount: does not match subtotal plus tax: 16.50 + 1.32 = 17.82,
+but the total says 18.40 (out by 0.58). Check the receipt — a missed
+tip line or a misread digit looks exactly like this.</pre>
+
+<h2>What REAP will never ask you for</h2>
+
+<ul>
+  <li><strong>A password.</strong> There is no REAP account, so there is nothing to have a password to.</li>
+  <li><strong>A signup, an email address, a licence key, an activation.</strong> None of these exist.</li>
+  <li><strong>Permission to send anything anywhere.</strong> There is no telemetry, no analytics, no crash reporting, no "anonymous usage data".</li>
+</ul>
+
+<p>
+  Your tax ID and your bank details stay in one file on your disk. They are
+  never sent to a model, and they are never included in anything REAP sends
+  anywhere else. That is not a promise about how carefully the code was
+  written — it is enforced by tests that run on every single change, and the
+  tests are in the repository next to the code.
+</p>
+
+<h2 id="uninstall">Undoing all of it</h2>
+
+<pre>claude mcp remove reap
+rm -rf ~/reapbooks
+rm -f ~/Library/Application\ Support/reap/credentials.json</pre>
+
+<p>
+  That removes the tool, REAP's own code, and the Google sign-in.
+  <strong>Your books folder <code>~/my-books</code> is left exactly where it
+  is</strong> — the invoices, receipts and statements in it are your records,
+  and no uninstaller should be deleting those. Drag it to the bin yourself if
+  you want it gone.
+</p>
+
+<footer>
+  REAP Books · <a href="./">Home</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> ·
+  <a href="https://github.com/talktalkmake/reapbooks">GitHub</a>
+</footer>
+
+</main>
+</body>
+</html>

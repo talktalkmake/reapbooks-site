@@ -65,8 +65,85 @@ footer {
 .claims li { margin-bottom: 1.2rem; }
 .claims strong { display: block; }
 
+
+/* --- setup guide --- */
+
+kbd {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.82em;
+  background: #f6f7f9;
+  border: 1px solid var(--rule);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  padding: 0.05em 0.35em;
+  white-space: nowrap;
+}
+
+/* What REAP prints back at you, as opposed to what you type. */
+pre.out {
+  background: transparent;
+  border-style: dashed;
+  color: var(--muted);
+}
+
+/* What you say to Claude, in ordinary words. */
+pre.say {
+  background: transparent;
+  border-left: 3px solid var(--accent);
+  border-radius: 0;
+  font-family: inherit;
+  font-size: 1em;
+  font-style: italic;
+  padding-left: 1rem;
+}
+
+.box {
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  padding: 1rem 1.1rem 0.4rem;
+  margin: 1.6rem 0;
+  background: #fbfcfd;
+}
+.box.calm { border-left-color: var(--rule); }
+.box > :last-child { margin-bottom: 0.6rem; }
+.box ul { margin-bottom: 0.6rem; }
+.box pre { margin-bottom: 0.8rem; }
+
+.tag {
+  font-size: 0.62em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 0.15em 0.6em;
+  vertical-align: 0.25em;
+  font-weight: 400;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.2rem 0 1.6rem;
+  font-size: 0.94rem;
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.6rem 0.8rem 0.6rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+th { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; }
+td:first-child { width: 40%; padding-right: 1.2rem; }
+p code, li code, td code { overflow-wrap: anywhere; }
+
 @media (prefers-color-scheme: dark) {
   :root { --ink: #e8eaed; --muted: #9aa2ad; --rule: #2a2e35; --paper: #14161a; --accent: #6cc19a; }
   p, li { color: #d3d7dd; }
   pre { background: #1b1e23; }
+  pre.out, pre.say { background: transparent; }
+
+  kbd { background: #1b1e23; }
+  .box { background: #181b20; }
 }
