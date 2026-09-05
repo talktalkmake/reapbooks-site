@@ -81,6 +81,16 @@
   work. <strong>When the prompt comes back, that command is finished.</strong>
 </p>
 
+<p class="small muted">
+  A few commands below use <code>$HOME</code> instead of <code>~</code> when
+  a folder is being handed to a program rather than typed after
+  <code>cd</code>. That is not a typo: <code>cd ~</code> works everywhere, but
+  Windows PowerShell won't expand a bare <code>~</code> inside a command's
+  arguments the way it does after <code>cd</code>, and <code>$HOME</code> is
+  the one spelling that works unchanged on a Mac, Linux and Windows
+  PowerShell alike. Paste these exactly as shown.
+</p>
+
 <div class="box calm">
   <p>
     One thing that startles everybody: <strong>when you type something
@@ -195,17 +205,17 @@ npm link</pre>
     do not worry about it. Everywhere below that says <code>reap</code>, type
     this instead:
   </p>
-  <pre>node ~/reapbooks/bin/reap.js</pre>
+  <pre>node $HOME/reapbooks/bin/reap.js</pre>
   <p class="small">
-    So <code>reap init --workspace ~/my-books</code> becomes
-    <code>node ~/reapbooks/bin/reap.js init --workspace ~/my-books</code>.
+    So <code>reap init --workspace $HOME/my-books</code> becomes
+    <code>node $HOME/reapbooks/bin/reap.js init --workspace $HOME/my-books</code>.
     Longer, identical result.
   </p>
 </div>
 
 <h2>Step 5 · Make your books folder</h2>
 
-<pre>reap init --workspace ~/my-books</pre>
+<pre>reap init --workspace $HOME/my-books</pre>
 
 <p>You get back something like this:</p>
 
@@ -242,7 +252,7 @@ npm link</pre>
 
 <h2>Step 6 · Introduce REAP to Claude</h2>
 
-<pre>claude mcp add reap -- reap serve --workspace ~/my-books</pre>
+<pre>claude mcp add reap -- reap serve --workspace $HOME/my-books</pre>
 
 <p>
   In plain English, that line says: <em>there is a tool called reap; to start
@@ -282,7 +292,8 @@ claude</pre>
 
 <p>
   When it finishes there is a file called <code>profile.json</code> in
-  <code>~/my-books</code>. You can open it in TextEdit and read it. It is
+  <code>~/my-books</code>. You can open it in a plain text editor and
+  read it — TextEdit on a Mac, Notepad on Windows. It is
   yours, it is plain text, and it never leaves your machine.
 </p>
 
@@ -292,8 +303,8 @@ claude</pre>
   Leave Claude with <code>/exit</code>, and run these two in the terminal:
 </p>
 
-<pre>reap set-tax-id --workspace ~/my-books
-reap set-bank --workspace ~/my-books</pre>
+<pre>reap set-tax-id --workspace $HOME/my-books
+reap set-bank --workspace $HOME/my-books</pre>
 
 <div class="box">
   <p><strong>Why these two are different.</strong></p>
@@ -422,7 +433,7 @@ of design work at $150 an hour.</pre>
 
 <pre>export REAP_GOOGLE_CLIENT_ID=...
 export REAP_GOOGLE_CLIENT_SECRET=...
-reap connect --workspace ~/my-books</pre>
+reap connect --workspace $HOME/my-books</pre>
 
 <p class="small muted">
   Those two <code>export</code> lines last only as long as this terminal window.
@@ -463,9 +474,11 @@ reap connect --workspace ~/my-books</pre>
   https://docs.google.com/spreadsheets/d/...</pre>
 
 <p>
-  The sign-in token is stored at
-  <code>~/Library/Application Support/reap/credentials.json</code> on a
-  Mac, readable only by you. Note that it is <em>not</em> in your books folder.
+  The sign-in token is stored outside your books folder, in your own
+  account's private application-data location, readable only by you:
+  <code>~/Library/Application Support/reap/credentials.json</code> on a Mac,
+  <code>%APPDATA%\reap\credentials.json</code> on Windows. Note that it is
+  <em>not</em> in your books folder.
   That is on purpose: the books folder is the one you might someday put under
   version control, and a standing key to your spreadsheets has no business
   being in something that can be uploaded.
@@ -483,7 +496,7 @@ reap connect --workspace ~/my-books</pre>
   </tr>
   <tr>
     <td><code>command not found: reap</code></td>
-    <td><code>npm link</code> didn't take. Use the long <code>node ~/reapbooks/bin/reap.js</code> form from step&nbsp;4.</td>
+    <td><code>npm link</code> didn't take. Use the long <code>node $HOME/reapbooks/bin/reap.js</code> form from step&nbsp;4.</td>
   </tr>
   <tr>
     <td><code>Repository not found</code></td>
@@ -538,6 +551,15 @@ tip line or a misread digit looks exactly like this.</pre>
 <pre>claude mcp remove reap
 rm -rf ~/reapbooks
 rm -f ~/Library/Application\ Support/reap/credentials.json</pre>
+
+<p class="small muted">
+  <strong>On Windows PowerShell</strong>, the last two lines are:
+  <code>Remove-Item -Recurse -Force $HOME\reapbooks</code> and
+  <code>Remove-Item -Force $env:APPDATA\reap\credentials.json</code>.
+  (PowerShell's <code>rm</code> is an alias for <code>Remove-Item</code> and
+  doesn't understand the combined <code>-rf</code> flag the Mac/Linux line
+  above uses.)
+</p>
 
 <p>
   That removes the tool, REAP's own code, and the Google sign-in.
